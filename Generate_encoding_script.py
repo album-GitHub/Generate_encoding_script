@@ -10,8 +10,8 @@ from tkinter import filedialog
 class Collect:
     def __init__(self):
         '''
-        当前版本:v2.0.2
-        完成时间:2023/2/16 19:39
+        当前版本:v2.0.4
+        完成时间:2023/4/9 00:34
         '''
         cf = configparser.ConfigParser()
         cf.read('config.ini', encoding='utf-8-sig')#, encoding='utf-8-sig'
@@ -50,6 +50,10 @@ class Collect:
         if len(self.input_list) < 2:
             print('输入为空, 手动选择文件夹')
             self.folder = filedialog.askdirectory() 
+            print('self.folder:',self.folder)
+            if self.folder == '':
+                print('未选择文件夹，退出脚本')
+                sys.exit()
         else:
             #暂只支持输入单个文件夹
             print('手动选择文件夹')
@@ -68,7 +72,8 @@ class Collect:
         #视频文件后缀名
         video = [
             '.mp4',
-            '.mkv'
+            '.mkv',
+            '.ts'
             ]
         sub = '.ass'
         for root,dirs,files in os.walk(filepath):
@@ -160,7 +165,7 @@ class Collect:
         
         #print('输入字幕为:',str(assfile))
         chsname = ['chs','简体']
-        chtname = ['cht','繁体']
+        chtname = ['cht','繁体','繁中']
         chsjpname = ['chs_jp','chs-jp','chs jp','简日']
         chtjpname = ['cht_jp','cht-jp','cht jp','繁日']
         ass = []
@@ -479,7 +484,7 @@ class Collect:
                         if video_flie == audio_flie == vpy_flie:
                             vpy_path = p
                             save_path = video_flie
-                            audio_path = audio_flie
+                            audio_path = a
                             count = count + 1
                             count_all = count_all + 1
                             if self.x264_switch == 'True':
@@ -550,7 +555,6 @@ class Collect:
             #只压制视频模式所以没有集数信息，返回的是列表
             audio_list = []
             for v in video:
-                print('v',v)
                 #获取音频数据 0音频编码格式audio_type 1音频音轨号audio_track 2音频比特率audio_bit_rate 3音频码率audio_sample_rate
                 audio_tyoe = self.audio_separation(v)
                 if audio_tyoe == False:
